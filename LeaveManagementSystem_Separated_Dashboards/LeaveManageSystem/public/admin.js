@@ -9,29 +9,14 @@ if (!token || localStorage.getItem('role') !== 'admin') {
 
 const leaveList = document.getElementById('leaveList');
 
-// Safely read JSON responses
-async function readResponse(response) {
-    const text = await response.text();
-
-    try {
-        return JSON.parse(text);
-    } catch {
-        throw new Error(
-            `Invalid server response. HTTP Status: ${response.status}`
-        );
-    }
-}
-
-// Get today's date in YYYY-MM-DD format
 function getToday() {
     const now = new Date();
 
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 }
 
-// Update dashboard summary
 function updateSummary(leaves) {
-    const totalApplied = leaves.length;
+    const today = getToday();
 
     const accepted = leaves.filter(
         leave => leave.status === 'Approved'
@@ -41,25 +26,20 @@ function updateSummary(leaves) {
         leave => leave.status === 'Rejected'
     ).length;
 
-    const today = getToday();
-
     const employeesOnLeave = new Set(
-        leaves
-            .filter(leave =>
-                leave.status === 'Approved' &&
-                leave.startDate <= today &&
-                leave.endDate >= today
-            )
-            .map(leave => leave.email)
+        leaves.filter(leave =>
+            leave.status === 'Approved' &&
+            leave.startDate <= today &&
+            leave.endDate >= today
+        ).map(leave => leave.email)
     );
 
-    document.getElementById('totalApplied').textContent = totalApplied;
+    document.getElementById('totalApplied').textContent = leaves.length;
     document.getElementById('totalAccepted').textContent = accepted;
     document.getElementById('totalRejected').textContent = rejected;
     document.getElementById('onLeaveToday').textContent = employeesOnLeave.size;
 }
 
-// Load all leave applications
 async function loadLeaves() {
     try {
         const response = await fetch(`${API_URL}/api/leaves`, {
@@ -69,18 +49,27 @@ async function loadLeaves() {
             }
         });
 
-        const leaves = await readResponse(response);
+        const responseText = await response.text();
+
+        let leaves;
+
+        try {
+            leaves = JSON.parse(responseText);
+        } catch {
+            throw new Error(
+                `Server returned HTML instead of JSON. HTTP Status: ${response.status}`
+            );
+        }
 
         if (!response.ok) {
             throw new Error(leaves.message || 'Could not load leave applications');
         }
 
         if (!Array.isArray(leaves)) {
-            throw new Error('Unexpected leave data received from server.');
+            throw new Error('Invalid leave data received from server');
         }
 
         updateSummary(leaves);
-
         leaveList.replaceChildren();
 
         if (leaves.length === 0) {
@@ -88,7 +77,7 @@ async function loadLeaves() {
             return;
         }
 
-        leaves.forEach((leave) => {
+        leaves.forEach(leave => {
             const card = document.createElement('div');
             card.className = 'leave-card';
 
@@ -112,14 +101,12 @@ async function loadLeaves() {
             if (leave.status === 'Pending') {
                 const approve = document.createElement('button');
                 approve.textContent = 'Approve';
-
                 approve.addEventListener('click', () => {
                     updateLeaveStatus(leave._id, 'Approved');
                 });
 
                 const reject = document.createElement('button');
                 reject.textContent = 'Reject';
-
                 reject.addEventListener('click', () => {
                     updateLeaveStatus(leave._id, 'Rejected');
                 });
@@ -131,12 +118,11 @@ async function loadLeaves() {
         });
 
     } catch (error) {
-        console.error('Error loading leaves:', error);
+        console.error(error);
         leaveList.textContent = error.message;
     }
 }
 
-// Approve or reject leave application
 async function updateLeaveStatus(id, status) {
     try {
         const response = await fetch(`${API_URL}/api/leaves/${id}`, {
@@ -148,21 +134,26 @@ async function updateLeaveStatus(id, status) {
             body: JSON.stringify({ status })
         });
 
-        const result = await readResponse(response);
+        const responseText = await response.text();
+
+        let result;
+
+        try {
+            result = JSON.parse(responseText);
+        } catch {
+            throw new Error(`Invalid server response. HTTP Status: ${response.status}`);
+        }
 
         if (!response.ok) {
             throw new Error(result.message || 'Unable to update status');
         }
 
         alert(`Leave status updated to ${status}`);
-
         await loadLeaves();
 
     } catch (error) {
-        console.error('Error updating leave:', error);
         alert(error.message);
     }
 }
 
-// Load dashboard data
 loadLeaves();
