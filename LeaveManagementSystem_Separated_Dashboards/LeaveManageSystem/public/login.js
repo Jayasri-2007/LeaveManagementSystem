@@ -2,14 +2,16 @@
 const loginForm = document.getElementById('loginForm');
 const message = document.getElementById('message');
 
+const API_URL = 'https://leavemanagementsystem-u499.onrender.com';
+
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const isAdmin = window.location.pathname.includes('admin-login');
 
     const url = isAdmin
-        ? '/api/auth/admin-login'
-        : '/api/auth/employee-login';
+        ? `${API_URL}/api/auth/admin-login`
+        : `${API_URL}/api/auth/employee-login`;
 
     const data = isAdmin
         ? {
@@ -22,6 +24,9 @@ loginForm.addEventListener('submit', async (event) => {
         };
 
     try {
+        message.textContent = 'Logging in...';
+        message.style.color = 'blue';
+
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -30,7 +35,17 @@ loginForm.addEventListener('submit', async (event) => {
             body: JSON.stringify(data)
         });
 
-        const result = await response.json();
+        const responseText = await response.text();
+
+        let result;
+
+        try {
+            result = JSON.parse(responseText);
+        } catch {
+            throw new Error(
+                `Backend returned an invalid response. HTTP Status: ${response.status}`
+            );
+        }
 
         if (!response.ok) {
             throw new Error(result.message || 'Login failed');
