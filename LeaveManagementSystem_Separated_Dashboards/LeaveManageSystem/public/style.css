@@ -9,18 +9,18 @@
 /* ===== Body ===== */
 body {
     font-family: "Segoe UI", Arial, sans-serif;
-    background: #f4f6f8;
-    color: #263445;
+    background: #f8f5f6;
+    color: #3b3035;
     line-height: 1.6;
 }
 
 /* ===== Header ===== */
 header {
-    background: #1e293b;
+    background: #30232b;
     color: #ffffff;
     text-align: center;
     padding: 30px 15px;
-    border-bottom: 4px solid #0f766e;
+    border-bottom: 4px solid #c16b8b;
 }
 
 header h1 {
@@ -30,7 +30,7 @@ header h1 {
 }
 
 header p {
-    color: #cbd5e1;
+    color: #ead8df;
 }
 
 /* ===== Main Content ===== */
@@ -47,17 +47,17 @@ main {
     padding: 28px;
     margin-bottom: 25px;
     border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid #eadde2;
+    box-shadow: 0 3px 12px rgba(80, 45, 60, 0.04);
 }
 
 h2 {
-    color: #1e293b;
+    color: #49323e;
     margin-bottom: 20px;
     font-size: 21px;
     font-weight: 600;
     padding-bottom: 12px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #eadde2;
 }
 
 /* ===== Forms ===== */
@@ -70,7 +70,7 @@ form {
 label {
     font-weight: 600;
     margin-top: 5px;
-    color: #334155;
+    color: #59404c;
 }
 
 input,
@@ -78,20 +78,20 @@ select,
 textarea {
     width: 100%;
     padding: 12px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #d9c5ce;
     border-radius: 6px;
     font-size: 15px;
     font-family: inherit;
     background: #ffffff;
-    color: #263445;
+    color: #3b3035;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: #0f766e;
-    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.10);
+    border-color: #c16b8b;
+    box-shadow: 0 0 0 3px rgba(193, 107, 139, 0.10);
 }
 
 textarea {
@@ -101,7 +101,7 @@ textarea {
 
 /* ===== Buttons ===== */
 button {
-    background: #0f766e;
+    background: #c16b8b;
     color: #ffffff;
     border: none;
     padding: 12px 20px;
@@ -114,7 +114,7 @@ button {
 }
 
 button:hover {
-    background: #115e59;
+    background: #a94f72;
 }
 
 /* ===== Dashboard Summary Cards ===== */
@@ -127,12 +127,12 @@ button:hover {
 
 .summary-card {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-top: 4px solid #0f766e;
+    border: 1px solid #eadde2;
+    border-top: 4px solid #c16b8b;
     border-radius: 9px;
     padding: 22px 15px;
     text-align: center;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 3px 10px rgba(80, 45, 60, 0.04);
     transition: transform 0.2s ease;
 }
 
@@ -141,40 +141,40 @@ button:hover {
 }
 
 .summary-card h3 {
-    color: #64748b;
+    color: #927783;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 10px;
 }
 
 .summary-card p {
-    color: #1e293b;
+    color: #49323e;
     font-size: 32px;
     font-weight: 700;
 }
 
 /* Subtle card distinctions */
 .summary-card:nth-child(1) {
-    border-top-color: #475569;
+    border-top-color: #806b75;
 }
 
 .summary-card:nth-child(2) {
-    border-top-color: #0f766e;
+    border-top-color: #bd6688;
 }
 
 .summary-card:nth-child(3) {
-    border-top-color: #b45353;
+    border-top-color: #b65b60;
 }
 
 .summary-card:nth-child(4) {
-    border-top-color: #2563a6;
+    border-top-color: #a66b88;
 }
 
 /* ===== Leave Application Cards ===== */
 .leave-card {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 4px solid #0f766e;
+    border: 1px solid #eadde2;
+    border-left: 4px solid #c16b8b;
     border-radius: 9px;
     padding: 20px;
     margin-bottom: 16px;
@@ -182,14 +182,14 @@ button:hover {
 }
 
 .leave-card h3 {
-    color: #1e293b;
+    color: #49323e;
     margin-bottom: 8px;
     font-size: 18px;
 }
 
 .leave-card p {
     margin-bottom: 5px;
-    color: #475569;
+    color: #725c66;
 }
 
 .leave-card button {
@@ -198,17 +198,17 @@ button:hover {
 
 /* Reject Button */
 .leave-card button:last-child {
-    background: #b45353;
+    background: #b66b63;
 }
 
 .leave-card button:last-child:hover {
-    background: #963f3f;
+    background: #98534d;
 }
 
 /* ===== Footer ===== */
 footer {
-    background: #1e293b;
-    color: #cbd5e1;
+    background: #30232b;
+    color: #ead8df;
     text-align: center;
     padding: 18px;
     margin-top: 30px;
