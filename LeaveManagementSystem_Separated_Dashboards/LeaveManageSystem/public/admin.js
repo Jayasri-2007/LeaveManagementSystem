@@ -1,4 +1,6 @@
 
+const API_URL = 'https://leavemanagementsystem-u499.onrender.com';
+
 const token = localStorage.getItem('token');
 
 if (!token || localStorage.getItem('role') !== 'admin') {
@@ -6,6 +8,19 @@ if (!token || localStorage.getItem('role') !== 'admin') {
 }
 
 const leaveList = document.getElementById('leaveList');
+
+// Safely read JSON responses
+async function readResponse(response) {
+    const text = await response.text();
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        throw new Error(
+            `Invalid server response. HTTP Status: ${response.status}`
+        );
+    }
+}
 
 // Get today's date in YYYY-MM-DD format
 function getToday() {
@@ -16,7 +31,6 @@ function getToday() {
 
 // Update dashboard summary
 function updateSummary(leaves) {
-
     const totalApplied = leaves.length;
 
     const accepted = leaves.filter(
@@ -29,7 +43,6 @@ function updateSummary(leaves) {
 
     const today = getToday();
 
-    // Count distinct employees who have approved leave today
     const employeesOnLeave = new Set(
         leaves
             .filter(leave =>
@@ -49,19 +62,23 @@ function updateSummary(leaves) {
 // Load all leave applications
 async function loadLeaves() {
     try {
-        const response = await fetch('/api/leaves', {
+        const response = await fetch(`${API_URL}/api/leaves`, {
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
 
-        const leaves = await response.json();
+        const leaves = await readResponse(response);
 
         if (!response.ok) {
             throw new Error(leaves.message || 'Could not load leave applications');
         }
 
-        // Update all four summary counts
+        if (!Array.isArray(leaves)) {
+            throw new Error('Unexpected leave data received from server.');
+        }
+
         updateSummary(leaves);
 
         leaveList.replaceChildren();
@@ -93,7 +110,6 @@ async function loadLeaves() {
             card.append(heading, email, details, reason, status);
 
             if (leave.status === 'Pending') {
-
                 const approve = document.createElement('button');
                 approve.textContent = 'Approve';
 
@@ -115,7 +131,7 @@ async function loadLeaves() {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error('Error loading leaves:', error);
         leaveList.textContent = error.message;
     }
 }
@@ -123,7 +139,7 @@ async function loadLeaves() {
 // Approve or reject leave application
 async function updateLeaveStatus(id, status) {
     try {
-        const response = await fetch(`/api/leaves/${id}`, {
+        const response = await fetch(`${API_URL}/api/leaves/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -132,7 +148,7 @@ async function updateLeaveStatus(id, status) {
             body: JSON.stringify({ status })
         });
 
-        const result = await response.json();
+        const result = await readResponse(response);
 
         if (!response.ok) {
             throw new Error(result.message || 'Unable to update status');
@@ -140,10 +156,10 @@ async function updateLeaveStatus(id, status) {
 
         alert(`Leave status updated to ${status}`);
 
-        // Refresh applications and summary counts
         await loadLeaves();
 
     } catch (error) {
+        console.error('Error updating leave:', error);
         alert(error.message);
     }
 }
