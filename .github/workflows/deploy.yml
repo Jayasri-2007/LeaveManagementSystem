@@ -34,7 +34,7 @@ jobs:
       - name: Upload frontend files
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './public'
+          path: './LeaveManageSystem/public'
 
       - name: Deploy to GitHub Pages
         id: deployment
